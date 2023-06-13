@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-large"> 处理工单 (待处理数量：{{ count }})</span>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>工单类别</th>
+                <th>发起人</th>
+                <th>执行部门</th>
+                <th>工单内容</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>通过时间</th>
+                <th>剩余时间/天</th>
+                <th>预警提示</th>
+
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in queryset %}
+                <tr>
+                    <td>{{ obj.id }}</td>
+                    <td>{{ obj.tpl.title }}</td>
+                    <td>{{ obj.user.username }}</td>
+                    <td>{{ obj.tpl.dpart.d_name }}</td>
+                    <td>{{ obj.info }}</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td>{{ obj.create_datetime }}</td>
+                    <td>{{ obj.update_datetime }}</td>
+                    {% if obj.alarm != 0 %}
+                        <td style="color:red;">{{ obj.rest_time }}</td>
+                    {% else %}
+                        <td>{{ obj.rest_time }}</td>
+                    {% endif %}
+                    {% if obj.alarm == 1 or obj.alarm == 2%}
+                        <td style="color:red;">{{ obj.get_alarm_display }}</td>
+                    {% else %}
+                        <td> </td>
+                    {% endif %}
+
+                    <td>
+                        {% if obj.status == 2 and obj.tpl.dpart.id == d_id%}
+                        <a class="btn btn-success btn-xs" href="action/1/{{ obj.id }}/">已处理回单</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+    <ul class="pagination">
+        {{ paper_string }}
+    </ul>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-large"> 处理协作 (待处理数量：{{ count1 }})</span>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>OID</th>
+                <th>提交部门</th>
+                <th>协助部门</th>
+                <th>说明</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in queryset1 %}
+                <tr>
+                   <td>{{ obj.ord_id }}</td>
+                    <td>{{ obj.submit }}</td>
+                    <td>{{ obj.support }}</td>
+                    <td>{{ obj.mark }}</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td>
+                        {% if obj.status == 1 and obj.support.id == d_id%}
+                        <a class="btn btn-success btn-xs" href="action/2/{{ obj.id }}/">已处理协作</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+    <ul class="pagination">
+        {{ paper_string }}
+    </ul>
+
+{% endblock %}

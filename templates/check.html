@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-large"> 审批工单 (待审批数量：{{ count }})</span>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>工单类别</th>
+                <th>发起人</th>
+                <th>工单内容</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in queryset %}
+                <tr>
+                    <td>{{ obj.id }}</td>
+                    <td>{{ obj.tpl.title }}</td>
+                    <td>{{ obj.user.username }}</td>
+                    <td>{{ obj.info }}</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td>{{ obj.create_datetime }}</td>
+                    <td>
+                        {% if obj.status == 1 %}
+                        <a class="btn btn-success btn-xs" href="action/1/{{ obj.id }}/">通过</a>
+                        <a class="btn btn-danger btn-xs" href="action/2/{{ obj.id }}/">不通过</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+    <ul class="pagination">
+        {{ paper_string }}
+    </ul>
+{% endblock %}
